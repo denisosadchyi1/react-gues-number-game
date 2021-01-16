@@ -25,6 +25,8 @@ const App = () => {
   const [localResult, setLocalResults] = useState([])
   const [push, setPush] = useState(false)
 
+  //Пробні дані, ігра находиться в розробці
+
   useEffect(() => {
     setWin(false)
     setRandomNumber(Math.floor(Math.random() * (max - min)) + min)

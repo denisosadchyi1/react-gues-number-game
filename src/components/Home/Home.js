@@ -7,14 +7,18 @@ const HomeWrapper = styled.div`
   margin: 200px auto;
   text-align: center;
   font-weight: 600;
-  color: #fff;
+  color: lightgreen;
   font-size: 25px;
+  div{
+    font-size: 35px;
+  }
 `;
 
 const Home = () => {
   return (
     <HomeWrapper>
-      Rule of the game: You have 10 time to gues the number
+      <div>Rules of the game:</div>
+      <p>you have 7 attempts to guess the given random number, good luck</p>
     </HomeWrapper>
   );
 }
