@@ -18,14 +18,10 @@ const App = () => {
   const [win, setWin] = useState(false)
   const [regameStatus, setRegameStatus] = useState(false)
   const [randomNumber, setRandomNumber] = useState(null)
-  const [enterNumber, setEnterNumber] = useState(null)
-  const [gameStatus, setGameStatus] = useState('')
+  const [enterNumber, setEnterNumber] = useState('')
+  const [gameStatus, setGameStatus] = useState([])
   const [numberOfAttempts, setNumberOfAttempts] = useState(1)
-  const [results, setResults] = useState([])
-  const [localResult, setLocalResults] = useState([])
-  const [push, setPush] = useState(false)
-
-  //Пробні дані, ігра находиться в розробці
+  const [localResult, setLocalResults] = useState(JSON.parse(localStorage.getItem('localResult')))
 
   useEffect(() => {
     setWin(false)
@@ -33,53 +29,61 @@ const App = () => {
   }, [regameStatus])
 
     useEffect(() => {
-    localStorage.setItem('results', JSON.stringify(results))
-  }, [push])
+    localStorage.setItem('localResult', JSON.stringify(localResult))
+    console.log('Effect local after update localResult')
+  }, [localResult])
 
-  useEffect(() => {
-    const tmp = localStorage.getItem('results')
-    console.log(JSON.parse(tmp))
-    setLocalResults(JSON.parse(tmp))
-  }, [])
-
-  console.log(results, 'result')
-  // console.log(localResult, 'local')
-
+  console.log(localResult, 'localResult')
 
   const onTry = (e) => {
     setNumberOfAttempts(prev => prev + 1)
-    if(numberOfAttempts >= 7) {
-      setPush(!push)
+    if(numberOfAttempts > 7) {
       alert('You Lose')
       setGameStatus('You Lose :( ')
-      setResults([
-        ...results, 
-        `You Lose :(`
-      ])
+      if(localResult === null ) {
+        setLocalResults([`You Lose :(`])
+        setNumberOfAttempts(1)
+      } else {
+        setLocalResults([
+          ...localResult, 
+          `You Lose :(`
+        ])
+      }
     }
     e.preventDefault()
     if(enterNumber == randomNumber) {
+      setNumberOfAttempts(1)
       setWin(true)
-      setPush(!push)
       setRegameStatus(!regameStatus)
-      setResults([
-        ...results, 
-        `You made ${numberOfAttempts} attemps, random number is ${randomNumber}`
-      ])
-      alert('you win')
+      alert('You win! :)')
+      if(localResult === null ) {
+        setLocalResults([ `You made ${numberOfAttempts} attemps, random number is ${randomNumber}`])
+      } else {
+        setLocalResults([
+          ...localResult, 
+          `You made ${numberOfAttempts} attemps, random number is ${randomNumber}`
+        ])
+      }
     } else if(enterNumber < randomNumber) {
-      setGameStatus('Not enough, try again!')
+      gameStatus ? setGameStatus([...gameStatus, `${enterNumber} Not enough, try again!`]) : setGameStatus([`${enterNumber} Not enough, try again!`])
     } else if(enterNumber > randomNumber) {
-      setGameStatus('too much, try again')
+      gameStatus ? setGameStatus([...gameStatus, `${enterNumber} Too much, try again!`]) : setGameStatus([`${enterNumber} Too much, try again!`])
     }
+    setEnterNumber('')
   }
 
+  const onClear = () => {
+    setLocalResults([''])
+  }
+
+  console.log(gameStatus, 'gameStatus')
   console.log(randomNumber)
 
   return (
     <AppContext.Provider value={{
       randomNumber, setEnterNumber, onTry, 
-      gameStatus, results, localResult
+      gameStatus, localResult, setLocalResults,
+      enterNumber, onClear
     }}>
       <AppWrapper>
         <Navigation />

@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import {Switch, Route} from 'react-router-dom';
 import styled from 'styled-components';
 import AppContext from '../../context/context';
+import GameStatus from '../GameStatus';
 
 const GameWrapper = styled.div`
   width: 800px;
@@ -38,11 +39,12 @@ const EnterButton = styled.button`
 `;
 
 const Game = () => {
-  const {setEnterNumber, onTry, gameStatus} = useContext(AppContext)
+  const {setEnterNumber, onTry, gameStatus, enterNumber} = useContext(AppContext)
   return (
     <GameWrapper>
       <EnterForm>
         <EnterInput 
+          value={enterNumber}
           type="text"
           onChange={(e) => setEnterNumber(e.target.value)} />
         <EnterButton 
@@ -50,7 +52,7 @@ const Game = () => {
           onClick={(e) => onTry(e)}>Try</EnterButton>
       </EnterForm>
       <GameStatusWrapper>
-        <h2>{gameStatus}</h2>
+        <GameStatus />
       </GameStatusWrapper>
     </GameWrapper>
   );
